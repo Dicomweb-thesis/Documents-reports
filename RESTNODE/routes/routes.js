@@ -7,6 +7,9 @@ module.exports = function(express,app){
     app.use(bodyParser.json());
     var gt='';
     var kq=[];
+    var patientID='13f2f0c2-aa60846c-9478b998-01553691-e3a88d90';
+    var instancesID='107ba45a-1d23dab3-9274143c-d2929952-20040f35';
+    //var studiesID='6c65289b-db2fcb71-7eaf73f4-8e12470c-a4d6d7cf';
 // connect orthan server
 	var client = new oc({
     url: 'http://localhost:8042',
@@ -20,21 +23,17 @@ module.exports = function(express,app){
    //mãng chứa các phần tử là một id của bệnh nhân
     // cho một vòng lặp duyệt tất cả các phần tử để truy vấn cũng như dispay tất cả các bệnh nhân
     
-	router.get('/',function(req,resp){
+	router.get('/',function(req,resp,next){
         client.patients.getAll()
 		.then(function(res) {
             gt=res.toString();// xữ lý ngắt chuỗi hoặc bất cứ thao tác gì để có được một mãng
-            //thêm vòng lặp cho thao tác ở dưới 
-            //console.log(gt);
             kq=gt.split(',');
-            //console.log('so luong phan tu cua mang:'+kq.length);
         })
         .then(function(){
         resp.setHeader('Content-Type', 'application/json');
             for(i=0;i<kq.length;i++){
                 client.patients.get(kq[i])
                 .then(function(res) {
-                //console.log(JSON.stringify(res));
                 resp.write(JSON.stringify(res));
                 })
             .catch(function(err) {
@@ -47,32 +46,31 @@ module.exports = function(express,app){
         });
        
 	});
-// get all instances
-	router.get('/allInstances',function(req,resp){
-	client.instances.getAll()
-		.then(function(res) {
-        	resp.json(res);
-   			 })
-    	.catch(function(err) {
-       		resp.json({message:'loi khong xac dinh'});
-    		});
-        });
-        
 
-// get all studies
-    var maso='27f7126f-4f66fb14-03f4081b-f9341db2-53925988';
-    router.get('/studies',function(req,resp){
-        client.patients.getStudies(maso)
+// get all studies of a patient and print infomation of every studies
+    //giải thích: client side nhận thấy danh sách bệnh nhân 
+    // Hữu: xữ lý json ở client và lập trình even button click vào một bệnh nhân sẽ get id bệnh nhân gửi về server 
+    // Thiên:xữ lý server nhận được một id bệnh nhân và routes cho ra danh sách studies và thông tin 
+    router.get('/studies',function(req,resp,next){
+        resp.setHeader('Content-Type', 'application/json');
+        client.patients.getStudies(patientID)
             .then(function(res) {
-                console.log(JSON.stringify(res));
+                resp.write(JSON.stringify(res));
             })
             .catch(function(err) {
                 resp.json({message:'loi khong xac dinh'});
             });
     });
-// get all patients
-    router.get('/patient',function(req,resp){
-        
+// get all series of a studies given by studies id
+    router.get('/series',function(req,resp,next){
+        resp.setHeader('Content-Type', 'application/json');
+        client.patients.getSeries(patientID)
+            .then(function(res) {
+                resp.write(JSON.stringify(res));
+            })
+            .catch(function(err) {
+                resp.json({message:'loi khong xac dinh'});
+            });
     });
 
 
@@ -90,6 +88,17 @@ module.exports = function(express,app){
 
      
 
+//get file
+    router.get('/file',function(req,resp,next){
+        resp.setHeader('Content-Type', 'application/json');
+        client.instances.getFile(instancesID)
+            .then(function(res) {
+                resp.write(JSON.stringify(res));
+            })
+            .catch(function(err) {
+                resp.json({message:'loi khong xac dinh'});
+            });
+    });
 //app use    
     app.use('/',router);
 	app.use('/tatcabenhnhan',router);
