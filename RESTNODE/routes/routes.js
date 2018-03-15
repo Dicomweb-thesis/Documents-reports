@@ -5,6 +5,9 @@ module.exports = function(express,app){
 	
 	app.use(bodyParser.urlencoded({extended:true}));
     app.use(bodyParser.json());
+   
+    app.engine('html', require('ejs').renderFile)
+    app.set('view engine', 'ejs')
     var gt='';
     var kq=[];
     var patientID='13f2f0c2-aa60846c-9478b998-01553691-e3a88d90';
@@ -87,7 +90,16 @@ module.exports = function(express,app){
     });
 
      
-
+// button viewer to Render index.html to handle image
+    /*xử lý sự kiện khi user click button VIEW tự động render một trang html mới để thao tác 
+    xử lý ảnh trong thư viện cornerstone( main task)
+     cách giải quyết:lấy tất cả các instances given by id of patients,bằng cách nào đó 
+    đưa ra tên file(trích xuất tên file),dùng thư viện dicomParser đẩy ra một buffer cho load 
+    lên frame 
+    */
+   router.get('/view',function(req,resp){
+        resp.render('index.html');
+    });
 //get file
     router.get('/file',function(req,resp,next){
         resp.setHeader('Content-Type', 'application/json');
@@ -101,7 +113,6 @@ module.exports = function(express,app){
     });
 //app use    
     app.use('/',router);
-	app.use('/tatcabenhnhan',router);
     app.use('/studies',router);
     app.use('/now',router);
     app.use('/patient',router);
