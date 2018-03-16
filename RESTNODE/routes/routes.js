@@ -17,8 +17,8 @@ module.exports = function(express,app){
 	var client = new oc({
     url: 'http://localhost:8042',
     auth: {
-      username: '',
-      password: ''
+      username: 'admin',
+      password: 'password'
     		}
     });
 
@@ -29,7 +29,7 @@ module.exports = function(express,app){
 	router.get('/',function(req,resp,next){
         client.patients.getAll()
 		.then(function(res) {
-            gt=res.toString();// xữ lý ngắt chuỗi hoặc bất cứ thao tác gì để có được một mãng
+            gt=res.toString();
             kq=gt.split(',');
         })
         .then(function(){
