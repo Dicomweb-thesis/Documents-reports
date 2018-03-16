@@ -1,0 +1,19 @@
+{
+  "name": "resfulapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular-cli": "^1.0.0-beta.28.3",
+    "body-parser": "^1.0.1",
+    "ejs": "^2.5.7",
+    "express": "^4.0.0",
+    "mongoose": "^3.6.13",
+    "orthanc-client": "^0.10.5"
+  }
+}
