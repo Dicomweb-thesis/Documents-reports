@@ -103,7 +103,7 @@ module.exports = function(express,app){
 //get file
     router.get('/file',function(req,resp,next){
         resp.setHeader('Content-Type', 'application/json');
-        client.instances.getFile(instancesID)
+        client.instances.get(instancesID)
             .then(function(res) {
                 resp.write(JSON.stringify(res));
             })
